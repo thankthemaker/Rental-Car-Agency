@@ -10,204 +10,170 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
- * This class implements the {@link CarService} interface and provides the necessary
- * <p>
- * implementations for interacting with the {@link Car} entity.
+ * This class implements the CarService interface and provides the implementation for car-related operations.
  */
 @Service
 public class CarServiceImpl implements CarService {
+  private final CarRepository carRepository;
 
-    private final CarRepository carRepository;
+  /**
+   * Constructs a new CarServiceImpl with the specified CarRepository dependency.
+   *
+   * @param carRepository the car repository to be used for car data access
+   */
+  public CarServiceImpl(CarRepository carRepository) {
+    this.carRepository = carRepository;
+  }
 
-    public CarServiceImpl(CarRepository carRepository) {
-        this.carRepository = carRepository;
+  /**
+   * Saves a car in the database.
+   *
+   * @param car the car to be saved
+   * @return the saved car
+   * @throws AlreadyExistsException if a car with the same registration number already exists
+   */
+  @Override
+  public Car saveCar(Car car) {
+    Optional<Car> existingCar = carRepository.findCarByRegistrationNumber(car.getRegistrationNumber());
+    if (existingCar.isPresent()) {
+      throw new AlreadyExistsException("The registration number " + car.getRegistrationNumber() + " was used by another car");
     }
+    return carRepository.save(car);
+  }
 
-
-    /**
-     * Saves a car entity in the database.
-     *
-     * @param car The car entity to be saved
-     * @throws AlreadyExistsException if the registration number is already used by another car
-     * @return The saved car entity
-     */
-    @Override
-    public Car saveCar(Car car) {
-        // get the registration number of the new car
-        int registrationNumber = car.getRegistrationNumber();
-
-        // check if the registration number is already used
-        Optional<Car> carByRegistrationNumber = carRepository.findCarByRegistrationNumber(registrationNumber);
-
-        if (carByRegistrationNumber.isPresent())
-            // if the registration number is already used, throw an exception
-            throw new AlreadyExistsException("The car with registration number " + car.getRegistrationNumber() + " already used");
-
-        // save the car
-        return carRepository.save(car);
+  /**
+   * Deletes a car from the database by its ID.
+   *
+   * @param id the ID of the car to be deleted
+   * @throws NoSuchElementException if the car with the specified ID does not exist
+   */
+  @Override
+  public void deleteCarById(Long id) {
+    Optional<Car> car = carRepository.findById(id);
+    if (car.isPresent()) {
+      carRepository.deleteCarById(id);
+    } else {
+      throw new NoSuchElementException("Car not found with ID: " + id);
     }
+  }
 
-
-    /**
-     * Updates a car entity in the database.
-     *
-     * @param id     The ID of the car entity to be updated
-     * @param newCar The new car entity
-     * @throws NoSuchElementException if the car entity with the specified ID does not exist in the database
-     *                                 or if the registration number was used by another car
-     * @return The updated car entity
-     */
-    @Override
-    public Car updateCar(Long id, Car newCar) {
-        Car existingCar = carRepository
-                .findById(id)
-                .orElseThrow(
-                        () -> new NoSuchElementException(
-                                "there is no car with id: " + id + " it may have been deleted already"
-                        ) // if not throw exception
-                );
-
-        // the new car registration number
-        int newCarRegistrationNumber = newCar.getRegistrationNumber();
-
-        // find the car with the new registration number
-        Optional<Car> carByRegistrationNumber =
-                carRepository.findCarByRegistrationNumber(newCarRegistrationNumber);
-
-        // check if the registration number was never used -> we can update.
-        if (carByRegistrationNumber.isEmpty()) {
-            existingCar.setRegistrationNumber(newCarRegistrationNumber);
-        } else {
-            // if the registration number was used before, check if it was used by the same car -> we can update.
-            if (newCarRegistrationNumber == existingCar.getRegistrationNumber()) {
-                existingCar.setRegistrationNumber(newCarRegistrationNumber);
-            } else {
-                // the registration number was used by another car -> we can't update the car.
-                throw new AlreadyExistsException(String.format("The registration number %d was used by another car", newCarRegistrationNumber));
-            }
-        }
-
-        existingCar.setSeats(newCar.getSeats());
-        existingCar.setGear(newCar.getGear());
-        existingCar.setDoors(newCar.getDoors());
-        existingCar.setKilometres(newCar.getKilometres());
-        existingCar.setFuel(newCar.getFuel());
-        existingCar.setName(newCar.getName());
-        existingCar.setModel(newCar.getModel());
-
-        return carRepository.save(existingCar);
+  /**
+   * Updates a car in the database with new information.
+   *
+   * @param id     the ID of the car to be updated
+   * @param newCar the new car information
+   * @return the updated car
+   * @throws NoSuchElementException if the car with the specified ID does not exist
+   * @throws AlreadyExistsException  if a car with the same registration number already exists
+   */
+  @Override
+  public Car updateCar(Long id, Car newCar) {
+    Optional<Car> existingCar = carRepository.findById(id);
+    if (existingCar.isPresent()) {
+      Optional<Car> carWithSameRegistrationNumber = carRepository.findCarByRegistrationNumber(newCar.getRegistrationNumber());
+      if (carWithSameRegistrationNumber.isPresent() && !carWithSameRegistrationNumber.get().getId().equals(id)) {
+        throw new AlreadyExistsException("The registration number " + newCar.getRegistrationNumber() + " was used by another car");
+      }
+      Car carToUpdate = existingCar.get();
+      carToUpdate.setRegistrationNumber(newCar.getRegistrationNumber());
+      carToUpdate.setName(newCar.getName());
+      carToUpdate.setModel(newCar.getModel());
+      carToUpdate.setSeats(newCar.getSeats());
+      carToUpdate.setGear(newCar.getGear());
+      carToUpdate.setDoors(newCar.getDoors());
+      carToUpdate.setKilometres(newCar.getKilometres());
+      carToUpdate.setFuel(newCar.getFuel());
+      return carRepository.save(carToUpdate);
+    } else {
+      throw new NoSuchElementException("Car not found with ID: " + id);
     }
+  }
 
+  /**
+   * Retrieves all cars from the database.
+   *
+   * @return a list of all cars
+   */
+  @Override
+  public List<Car> findAll() {
+    return carRepository.findAll();
+  }
 
-    /**
-     * Deletes a car entity from the database by its ID.
-     *
-     * @param id The ID of the car entity to be deleted
-     * @throws NoSuchElementException if the car entity with the specified ID does not exist in the database
-     */
-    @Override
-    public void deleteCarById(Long id) {
-        carRepository
-                .deleteCarById(
-                        carRepository
-                                .findById(id) // find the car exists
-                                .orElseThrow(
-                                        () -> new NoSuchElementException(
-                                                "there is no car with id: " + id + " it may have been deleted already"
-                                        ) // if not throw exception
-                                ).getId() // get the id of the car
-                );
+  /**
+   * Retrieves a car from the database by its ID.
+   *
+   * @param id the ID of the car to retrieve
+   * @return the car with the specified ID
+   * @throws NoSuchElementException if the car with the specified ID does not exist
+   */
+  @Override
+  public Car findCarById(long id) {
+    Optional<Car> car = carRepository.findById(id);
+    if (car.isPresent()) {
+      return car.get();
+    } else {
+      throw new NoSuchElementException("Car not found with ID: " + id);
     }
+  }
 
-
-    /**
-     * Finds all the car entities in the database.
-     *
-     * @return A list of all the car entities in the database
-     */
-    @Override
-    public List<Car> findAll() {
-        return carRepository.findAll();
+  /**
+   * Retrieves a car from the database by its registration number.
+   *
+   * @param registrationNumber the registration number of the car to retrieve
+   * @return the car with the specified registration number
+   * @throws NoSuchElementException if the car with the specified registration number does not exist
+   */
+  @Override
+  public Car findCarByRegistrationNumber(int registrationNumber) {
+    Optional<Car> car = carRepository.findCarByRegistrationNumber(registrationNumber);
+    if (car.isPresent()) {
+      return car.get();
+    } else {
+      throw new NoSuchElementException("Car not found with registration number: " + registrationNumber);
     }
+  }
 
+  /**
+   * Retrieves a list of cars from the database by their name.
+   *
+   * @param carName the name of the cars to retrieve
+   * @return a list of cars with the specified name
+   */
+  @Override
+  public List<Car> findCarsByCarName(String carName) {
+    return carRepository.findCarsByCarName(carName);
+  }
 
-    /**
-     * Finds a car entity in the database by its ID.
-     *
-     * @param id The ID of the car entity to be found
-     * @return The car entity with the specified ID
-     * @throws NoSuchElementException if the car entity with the specified ID does not exist in the database
-     */
-    @Override
-    public Car findCarById(long id) throws NoSuchElementException {
-        return carRepository.findById(id)
-                .orElseThrow(
-                        () -> new NoSuchElementException("The car with ID " + id + " does not exist in the database")
-                );
-    }
+  /**
+   * Retrieves a list of cars from the database with kilometers less than or equal to the specified value.
+   *
+   * @param kilometre the maximum kilometers value
+   * @return a list of cars with kilometers less than or equal to the specified value
+   */
+  @Override
+  public List<Car> findCarsByKilometresLessThanEqual(int kilometre) {
+    return carRepository.findCarsByKilometresLessThanEqual(kilometre);
+  }
 
+  /**
+   * Retrieves a list of cars from the database with kilometers greater than or equal to the specified value.
+   *
+   * @param kilometre the minimum kilometers value
+   * @return a list of cars with kilometers greater than or equal to the specified value
+   */
+  @Override
+  public List<Car> findCarsByKilometresGreaterThanEqual(int kilometre) {
+    return carRepository.findCarsByKilometresGreaterThanEqual(kilometre);
+  }
 
-    /**
-     * Finds a car entity in the database by its registration number.
-     *
-     * @param registrationNumber The registration number of the car entity to be found
-     * @return The car entity with the specified registration number
-     * @throws NoSuchElementException if the car entity with the specified registration number does not exist in the database
-     */
-    @Override
-    public Car findCarByRegistrationNumber(int registrationNumber) throws NoSuchElementException {
-        return carRepository.findCarByRegistrationNumber(registrationNumber)
-                .orElseThrow(
-                        () -> new NoSuchElementException("The car with registration number " + registrationNumber + " does not exist in the database")
-                );
-    }
-
-
-    /**
-     * Finds all the car entities in the database with the specified name.
-     *
-     * @param name The name of the car entities to be found
-     * @return A list of all the car entities with the specified name
-     */
-    @Override
-    public List<Car> findCarsByCarName(String name) {
-        return carRepository.findCarsByCarName(name);
-    }
-
-
-    /**
-     * Finds all the car entities in the database with the specified model.
-     *
-     * @param model The model of the car entities to be found
-     * @return A list of all the car entities with the specified model
-     */
-    @Override
-    public List<Car> findCarsByModel(Car.Model model) throws NoSuchElementException {
-        return carRepository.findCarsByModel(model);
-    }
-
-
-    /**
-     * Finds all the car entities in the database with the specified number of kilometres or less.
-     *
-     * @param kilometre The number of kilometres of the car entities to be found
-     * @return A list of all the car entities with the specified number of kilometres or less
-     */
-    @Override
-    public List<Car> findCarsByKilometresLessThanEqual(int kilometre) {
-        return carRepository.findCarsByKilometresLessThanEqual(kilometre);
-    }
-
-
-    /**
-     * Finds all the car entities in the database with the specified number of kilometres or more.
-     *
-     * @param kilometre The number of kilometres of the car entities to be found
-     * @return A list of all the car entities with the specified number of kilometres or more
-     */
-    @Override
-    public List<Car> findCarsByKilometresGreaterThanEqual(int kilometre) throws NoSuchElementException {
-        return carRepository.findCarsByKilometresGreaterThanEqual(kilometre);
-    }
-
+  /**
+   * Retrieves a list of cars from the database with the specified model.
+   *
+   * @param model the model of the cars to retrieve
+   * @return a list of cars with the specified model
+   */
+  @Override
+  public List<Car> findCarsByModel(Car.Model model) {
+    return carRepository.findCarsByModel(model);
+  }
 }
