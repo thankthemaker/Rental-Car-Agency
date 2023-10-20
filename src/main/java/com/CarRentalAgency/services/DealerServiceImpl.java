@@ -42,13 +42,11 @@ public class DealerServiceImpl implements DealerService {
         // check if the dealer with the same email already exists
         Dealer existingDealer = dealerRepository
                 .findByEmail(dealer.getEmail()) // return the dealer with the specified email
-                .orElse(null); // if the dealer does not exist return null
+                .orElseThrow(() -> new AlreadyExistsException("THIS EMAIL:" + dealer.getEmail() + " ALREADY USED !!"));
 
         // if the email is not used by another dealer, save the dealer
-        if (existingDealer == null) {
             dealerRepository.save(dealer);
-        } else  // if the email is already used, throw an exception
-            throw new AlreadyExistsException("THIS EMAIL:" + dealer.getEmail() + " ALREADY USED !!");
+            
         return dealer;
     }
 
