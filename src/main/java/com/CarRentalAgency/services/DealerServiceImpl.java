@@ -46,7 +46,7 @@ public class DealerServiceImpl implements DealerService {
 
         // if the email is not used by another dealer, save the dealer
             dealerRepository.save(dealer);
-            
+
         return dealer;
     }
 
