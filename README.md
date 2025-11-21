@@ -129,20 +129,6 @@ The following endpoints are available in the API:
 In this project, I learned how to build a REST API using Spring Boot and how to use Spring Data JPA to interact with a
 MySQL database.
 
-* Spring Boot 3 basics and how to use it to build a REST API.
-* Following the RESTful API design principles.
-* Using Spring Data JPA to interact with a MySQL database.
-* Flyway for database migrations.
-* Server and Client Side Error Handling.
-* Validating user inputs or JSON object using Spring Boot Validation.
-* Unit Testing using JUnit and Mockito.
-* Integration Testing using Spring Boot Test.
-* Dealing with Data using Spring Data JPA.
-    * Fetching data using a GET api.
-    * Sending data from a FORM using a POST api.
-    * Editing an existing object using a PUT api
-    * Deleting an existing product using a DELETE api
-    * Deleting an existing product using a DELETE api
 
 ## _Contributing_
 
