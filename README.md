@@ -124,10 +124,7 @@ The following endpoints are available in the API:
 |   `POST`    | `/api/v1/transactions` | `Transaction` |    `Transaction`    | Create a new Transaction       |
 |    `GET`    | `/api/v1/transactions` |       -       | `List<Transaction>` | Get a list of all transactions |
 
-## _Knowledge Gained_
 
-In this project, I learned how to build a REST API using Spring Boot and how to use Spring Data JPA to interact with a
-MySQL database.
 
 
 ## _Contributing_
