@@ -142,6 +142,7 @@ MySQL database.
     * Sending data from a FORM using a POST api.
     * Editing an existing object using a PUT api
     * Deleting an existing product using a DELETE api
+    * Deleting an existing product using a DELETE api
 
 ## _Contributing_
 
