@@ -125,24 +125,6 @@ The following endpoints are available in the API:
 |    `GET`    | `/api/v1/transactions` |       -       | `List<Transaction>` | Get a list of all transactions |
 
 
-
-
-## _Contributing_
-
-1. Fork this repository to your GitHub account.
-2. Clone the forked repository to your local machine.
-3. Create a new branch for your changes.
-4. Make your changes and commit them with descriptive commit messages.
-5. Push your changes to your GitHub account.
-6. Create a pull request from your branch to the original repository's main branch.
-7. Wait for the maintainers to review and merge your changes.
-
-When making contributions, please keep the following in mind:
-
-* Follow the code style and formatting guidelines used in the project.
-* Write clear and concise commit messages that explain the changes you made.
-* Make sure your changes do not break existing functionality.
-* Write tests for new code and ensure that all existing tests pass.
 sdfdsf
 ## _License_
 
