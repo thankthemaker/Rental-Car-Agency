@@ -44,6 +44,8 @@ class CarServiceImplTest {
     // 2 cars for testing.
     Car car1;
     Car car2;
+    Car car3;
+
 
     // list of cars for testing.
     List<Car> carList;
@@ -66,6 +68,18 @@ class CarServiceImplTest {
                 .build();
 
         car2 = Car.builder()
+                .id(2L)
+                .registrationNumber(511)
+                .name("Mercedes-Benz GLC Class GLC300")
+                .kilometres(25_000)
+                .model(SUV)
+                .gear(Car.Gear.Automatic)
+                .fuel(Car.Fuel.Petrol)
+                .seats((short) 5)
+                .doors((short) 4)
+                .build();
+
+                car3 = Car.builder()
                 .id(2L)
                 .registrationNumber(511)
                 .name("Mercedes-Benz GLC Class GLC300")
