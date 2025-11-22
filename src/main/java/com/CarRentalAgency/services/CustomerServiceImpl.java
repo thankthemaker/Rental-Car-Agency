@@ -50,6 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
             customerRepository.save(customer);
         else
             // if the email is already used, throw an exception
+            System.out.println("THIS EMAIL:" + customer.getEmail() + " ALREADY USED !!");
             throw new AlreadyExistsException("THIS EMAIL:" + customer.getEmail() + " ALREADY USED !!");
         return customer;
     }
