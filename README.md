@@ -124,42 +124,8 @@ The following endpoints are available in the API:
 |   `POST`    | `/api/v1/transactions` | `Transaction` |    `Transaction`    | Create a new Transaction       |
 |    `GET`    | `/api/v1/transactions` |       -       | `List<Transaction>` | Get a list of all transactions |
 
-## _Knowledge Gained_
 
-In this project, I learned how to build a REST API using Spring Boot and how to use Spring Data JPA to interact with a
-MySQL database.
-
-* Spring Boot 3 basics and how to use it to build a REST API.
-* Following the RESTful API design principles.
-* Using Spring Data JPA to interact with a MySQL database.
-* Flyway for database migrations.
-* Server and Client Side Error Handling.
-* Validating user inputs or JSON object using Spring Boot Validation.
-* Unit Testing using JUnit and Mockito.
-* Integration Testing using Spring Boot Test.
-* Dealing with Data using Spring Data JPA.
-    * Fetching data using a GET api.
-    * Sending data from a FORM using a POST api.
-    * Editing an existing object using a PUT api
-    * Deleting an existing product using a DELETE api
-
-## _Contributing_
-
-1. Fork this repository to your GitHub account.
-2. Clone the forked repository to your local machine.
-3. Create a new branch for your changes.
-4. Make your changes and commit them with descriptive commit messages.
-5. Push your changes to your GitHub account.
-6. Create a pull request from your branch to the original repository's main branch.
-7. Wait for the maintainers to review and merge your changes.
-
-When making contributions, please keep the following in mind:
-
-* Follow the code style and formatting guidelines used in the project.
-* Write clear and concise commit messages that explain the changes you made.
-* Make sure your changes do not break existing functionality.
-* Write tests for new code and ensure that all existing tests pass.
-
+sdfdsf
 ## _License_
 
 You are allowed to use, copy, modify, and distribute the code freely, just don't create a bomb or something like that xD
